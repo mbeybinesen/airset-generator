@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" rel="noopener" href="/styles/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" rel="noopener" href="/styles/fontawesome.css" />
+    <link rel="stylesheet" type="text/css" rel="noopener" href="/styles/main.css" />
+  </head>
+  <body class="width-800px p-5">
+    <div class="d-flex">
+      <div class="me-3">
+        <img src="/images/kimola-cognitive.png" class="width-41px" />
+      </div>
+      <div class="pt-1">
+        <div>
+          <h1 class="font-2_1 fw-bold line-height-1_8 d-inline-block mb-2">Airset Generator</h1><i class="fas fa-angle-right color-green mx-2 font-1_5 mt-auto"></i><span class="color-green font-1_5 mt-auto">Options</span>
+        </div>
+        <p class="font-1_3 line-height-2_2">Set your API key so all the airsets can apear on your dashboard.</p>
+      </div>
+    </div>
+    <div id="div-api-key" class="border-rad-3px border-solid border-1px border-green p-3 bg-color-green-0_1 color-green mt-5">
+      <div class="d-flex justify-content-between">
+        <div class="flex-fill pe-4">
+          <span class="d-block fw-bold font-1_1">API Key</span>
+          <input id="input-api-key" type="text" class="border-1px border-solid border-mid-gray border-rad-3px w-100 p-1 font-0_9 outline-none" maxlength="24" placeholder="Your special API key to authorize your account." />
+        </div>
+        <div class="d-flex">
+          <a id="btn-save" href="#" class="border-rad-3px font-1_4 fw-semibold text-decoration-none bg-color-grad-green color-white my-auto px-5 py-2">Save!</a>
+        </div>
+      </div>
+    </div>
+    <div class="font-0_9 color-dark-gray mt-4">Learn more about <a href="#" target="_blank" class="color-dark-gray">Airsets</a> provided by <a href="#" target="_blank" class="color-dark-gray">Kimola</a>.</div>
+    <script src="/options.js"></script>
+    <script src="/scripts/jquery.js"></script>
+    <script src="/scripts/bootstrap.js"></script>
+  </body>
+</html>
