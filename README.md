@@ -19,7 +19,7 @@ Kimola Airset Generator currently supports;
 - Reddit (Go to a post with comments - e.g., https://www.reddit.com/r/mildlyinfuriating/comments/w1jxyw/my_friend_group_forgot_today_is_my_birthday_and/)
 
 ## Generating Airset
-When on a web site supported by Kimola Airset Generator, you will see the badge on the icon. Badge displays the number of comments can be scarped.
+When on a web site supported by Kimola Airset Generator, you will see the badge on the icon. Badge displays the number of comments can be scraped.
 ![extension-with-a-badge](https://user-images.githubusercontent.com/2235594/179510551-d1f4203e-8106-413f-92af-6b368f0fbb5a.png)
 
-If you can not see a badge on the icon as expected, your relaod the page.
+If you can not see a badge on the icon as expected, your reload the page.
