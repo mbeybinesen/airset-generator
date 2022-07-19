@@ -10,33 +10,41 @@ function sendUpdateTabs() {
 
 window.addEventListener('load', () => {
     chrome.storage.sync.get(['kimola_cognitive_airset_sources'], function(sources) {
+        let hostMatch = false, patternMatch = false;
         for (let i in sources.kimola_cognitive_airset_sources) {
             let regex = new RegExp(sources.kimola_cognitive_airset_sources[i].pattern);
             if (regex.test(document.location.href)) {
+                patternMatch = true;
+                hostMatch = true;
+                source = sources.kimola_cognitive_airset_sources[i];
+                break;
+            }
+            regex = new RegExp(sources.kimola_cognitive_airset_sources[i].host);
+            if (regex.test(document.location.host)) {
+                patternMatch = false;
+                hostMatch = true;
                 source = sources.kimola_cognitive_airset_sources[i];
                 break;
             }
         }
-        console.log('content.js: this web site matches with a source!');
-        if (source) {
+        if (patternMatch) {
             let validationElement = document.querySelector(source.validationSelector);
             if (validationElement === null) {
-                console.log('content.js: validation element is null, observation of the document.body has been started...');
                 validationObserver.observe(document.body, { subtree: true, childList: true });
             }
             else {
-                console.log('content.js: validation element is found! now, observing content...');
                 sendUpdateTabs();
                 contentObserver.observe(document.querySelector(source.validationSelector), { subtree: true, childList: true });
             }
+        }
+        else if (hostMatch) {
+            validationObserver.observe(document.body, { subtree: true, childList: true });
         }
     });
 });
 
 var validationObserver = new MutationObserver(function() {
     if (document.querySelectorAll(source.validationSelector).length > 0) {
-        validationObserver.disconnect();
-        console.log('observation of the document.body has been stopped.');
         sendUpdateTabs();
         contentObserver.observe(document.querySelector(source.validationSelector), { subtree: true, childList: true });
     }
@@ -44,7 +52,6 @@ var validationObserver = new MutationObserver(function() {
 
 var contentObserver = new MutationObserver(function() {
     if (document.querySelectorAll(source.validationSelector).length > 0) {
-        console.log('observing content continues...');
         sendUpdateTabs();
     }
 });
@@ -57,4 +64,4 @@ chrome.runtime.onMessage.addListener(
         } else if (request.text === 'get-availability')
             sendResponse(source);
     }
-  );
+);
