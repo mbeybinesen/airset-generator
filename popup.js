@@ -19,8 +19,8 @@ window.addEventListener('load', () => {
             e.preventDefault();
             btnGenerate.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Generating...');
             chrome.runtime.sendMessage({text: 'generate-airset'}, function(response) {
-              if (response) {
-                let bar = $('<div class="border-rad-3px bg-color-green color-white fw-bolder text-center p-2 mt-3">Airset "' + response.name + '" has been successfully created!</div>');
+              if (response.status === 'ok') {
+                let bar = $('<div class="border-rad-3px bg-color-green color-white fw-bolder text-center p-2 mt-3">Airset "' + response.body.name + '" has been successfully created!</div>');
                 divAvailable.append(bar);
                 setTimeout(() => bar.fadeOut('slow', () => bar.remove()), 3500);
                 btnGenerate.prop('disabled', false).text('Generate!');

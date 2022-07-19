@@ -31,13 +31,25 @@ chrome.runtime.onMessage.addListener(
       return true;
     } else if (request.text === 'generate-airset') {
       chrome.storage.sync.get(['kimola_cognitive_api_key'], function(apikey) {
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-          chrome.tabs.sendMessage(tabs[0].id, {text: 'get-content'}, function(reply) {
-            fetch(reply.url, { method: 'POST', headers: { 'accept': '*/*', 'Content-Type': 'application/json-patch+json', 'Authorization': 'Bearer ' + apikey.kimola_cognitive_api_key }, body: JSON.stringify(reply.body) })
-              .then(response => response.json())
-              .then(json => sendResponse(json));
+
+        chrome.windows.getCurrent(window => {
+          chrome.tabs.query({active: true, windowId: window.id}, tabs => {
+            chrome.tabs.sendMessage(tabs[0].id, {text: 'get-content'}, function(reply) {
+              fetch(reply.url, { method: 'POST', headers: { 'accept': '*/*', 'Content-Type': 'application/json-patch+json', 'Authorization': 'Bearer ' + apikey.kimola_cognitive_api_key }, body: JSON.stringify(reply.body) })
+                .then(response =>  {
+                  if (response.ok)
+                  return response.json();
+                else
+                  return response.text().then(error => { throw ({ message: error, status: response.status }) });
+                })
+                .then(json => sendResponse({ status: 'ok', body: json}))
+                .catch(error => sendResponse({ status: 'error', body: error}));
+            });
           });
         });
+
+        // chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        // });
       });
 
 
