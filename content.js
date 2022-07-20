@@ -59,9 +59,10 @@ var contentObserver = new MutationObserver(function() {
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if (request.text === 'get-content') {
-            let url = 'https://api.kimola.com/v1/cognitive/airsets?url=' + encodeURIComponent(document.location.href);
-            sendResponse({ url, body: document.documentElement.outerHTML });
+            sendResponse({ url: document.location.href, body: document.documentElement.outerHTML });
         } else if (request.text === 'get-availability')
             sendResponse(source);
+        else if (request.text === 'navigate')
+            window.location.href = request.next;
     }
 );

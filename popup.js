@@ -17,15 +17,28 @@ window.addEventListener('load', () => {
           spanName.text(source.name);
           btnGenerate.unbind('click').bind('click', (e) => {
             e.preventDefault();
+            if (btnGenerate.prop('disabled'))
+              return;
             btnGenerate.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Generating...');
-            chrome.runtime.sendMessage({text: 'generate-airset'}, function(response) {
-              if (response.status === 'ok') {
-                let bar = $('<div class="border-rad-3px bg-color-green color-white fw-bolder text-center p-2 mt-3">Airset "' + response.body.name + '" has been successfully created!</div>');
-                divAvailable.append(bar);
-                setTimeout(() => bar.fadeOut('slow', () => bar.remove()), 3500);
-                btnGenerate.prop('disabled', false).text('Generate!');
-              }
-            });
+            let index = 0, code, next;
+            do {
+              chrome.runtime.sendMessage({index, code, next, text: 'generate-airset'}, function(response) {
+                if (response.status === 'ok') {
+                  if (response.body.next) {
+                    index = response.body.index;
+                    code = response.body.code;
+                    next = response.body.next;
+                    btnGenerate.text('Continuing...');
+                  }
+                  else  {
+                    let bar = $('<div class="border-rad-3px bg-color-green color-white fw-bolder text-center p-2 mt-3">Airset "' + response.body.name + '" has been successfully created!</div>');
+                    divAvailable.append(bar);
+                    setTimeout(() => bar.fadeOut('slow', () => bar.remove()), 3500);
+                    btnGenerate.prop('disabled', false).text('Generate!');
+                  }
+                }
+              });
+            } while (next);
           });
         } else {
           divUnavailable.removeClass('d-none');
