@@ -1,7 +1,4 @@
-import generateAirset from './functions.js';
-
 let apiKey;
-const apiUrl = 'https://api.kimola.com/v1/';
 
 const divAvailable = $('#div-source-available');
 const divUnavailable = $('#div-source-unavailable');
@@ -19,7 +16,7 @@ chrome.storage.onChanged.addListener((meta) => {
       chrome.tabs.query({active: true, windowId: window.id}, tabs => {
         if (meta.tabs.oldValue && meta.tabs.oldValue[tabs[0].id] && meta.tabs.newValue[tabs[0].id] === undefined)
           setupView(tabs, null, { completed: true, name: meta.tabs.oldValue[tabs[0].id].name });
-        else if (meta.tabs.oldValue[tabs[0].id] && meta.tabs.newValue[tabs[0].id])
+        else if (meta.tabs.oldValue && meta.tabs.oldValue[tabs[0].id] && meta.tabs.newValue && meta.tabs.newValue[tabs[0].id])
             spanSourceCount.text(meta.tabs.newValue[tabs[0].id].index + ' reviews and counting...');
       });
     });

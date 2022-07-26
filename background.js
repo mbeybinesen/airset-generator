@@ -1,6 +1,5 @@
-import generateAirset from './functions.js';
+import { apiUrl, generateAirset } from './functions.js';
 
-const apiUrl = 'https://api.kimola.com/v1/';
 let apiKey;
 
 const setSources = () => {
@@ -41,7 +40,6 @@ chrome.runtime.onMessage.addListener(
                 leaps[tabs[0].id] = { ...leaps[tabs[0].id], index: result.index, code: result.code, name: result.name, next: result.next };
                 if (result.next) {
                   chrome.storage.local.set({ 'tabs': leaps }, () => {
-                    console.log('update-tabs', leaps);
                     sendResponse({ success: true, message: 'continues', body: result });
                     chrome.tabs.sendMessage(tabs[0].id, { next: result.next, text: 'action' });
                   });
@@ -81,17 +79,21 @@ chrome.runtime.onMessage.addListener(
                       if (result.next) {
                         chrome.storage.local.get(['tabs'], (data) => { 
                           leaps = data.tabs ?? {};
-                          if (leaps[tabs[0].id].isWorking) {
-                            leaps[tabs[0].id] = { ...leaps[tabs[0].id], index: result.index, next: result.next };
-                            chrome.storage.local.set({'tabs': leaps}, () => {
-                              chrome.tabs.sendMessage(tabs[0].id, { next: process.next, text: 'action' });
-                              return true;
-                            });
+                          if (leaps[tabs[0].id]) {
+                            if (leaps[tabs[0].id].isWorking) {
+                              leaps[tabs[0].id] = { ...leaps[tabs[0].id], index: result.index, next: result.next };
+                              chrome.storage.local.set({'tabs': leaps}, () => {
+                                chrome.tabs.sendMessage(tabs[0].id, { next: process.next, text: 'action' });
+                                return true;
+                              });
+                            }
+                            else {
+                              delete leaps[tabs[0].id];
+                              chrome.storage.local.set({'tabs': leaps}, () => { return true; });
+                            }
                           }
-                          else {
-                            delete leaps[tabs[0].id];
-                            chrome.storage.local.set({'tabs': leaps}, () => { return true; });
-                          }
+                          else
+                            return true;
                         });
                       }
                       else {

@@ -1,8 +1,7 @@
-const apiUrl = 'https://api.kimola.com/v1/';
+const apiUrl = 'https://localhost:7142/v1/';
 
-export default function generateAirset(apiKey, url, index, code, next, body) {
-  const requestUrl = apiUrl + 'cognitive/airsets?url=' + encodeURIComponent(url) + (index ? ('&index=' + index) : '') + (code ? ('&code=' + code) : '') + (next ? ('&next=' + next) : '');
-  console.log(requestUrl);
+function generateAirset(apiKey, url, index, code, next, body) {
+  const requestUrl = apiUrl + 'cognitive/airsets?url=' + encodeURIComponent(url) + (index ? ('&index=' + index) : '') + (code ? ('&code=' + code) : '') + (next ? ('&next=' + encodeURIComponent(next)) : '');
   return new Promise((resolve, reject) => {
     fetch(requestUrl, { method: 'POST', headers: { 'accept': '*/*', 'Content-Type': 'application/json-patch+json', 'Authorization': 'Bearer ' + apiKey }, body: JSON.stringify(body) })
       .then(response =>  {
@@ -19,3 +18,5 @@ export default function generateAirset(apiKey, url, index, code, next, body) {
       });
   });
 }
+
+export { apiUrl, generateAirset }
