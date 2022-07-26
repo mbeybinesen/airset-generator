@@ -1,13 +1,6 @@
 let source = null;
 let timeout;
 
-function updateBadge(length) {
-    if (length !== source.size) {
-        source.size = length;
-        chrome.runtime.sendMessage({text: 'update-tabs', body: source}); 
-    }
-}
-
 window.addEventListener('load', () => {
     chrome.storage.sync.get(['kimola_cognitive_airset_sources'], function(sources) {
         let hostMatch = false, patternMatch = false;
@@ -36,14 +29,25 @@ window.addEventListener('load', () => {
 
 var contentObserver = new MutationObserver(() => {
     let length = document.querySelectorAll(source.validationSelector).length;
-    if (length === 0)
+    if (length === 0) {
+        source.size = length;
+        chrome.runtime.sendMessage({text: 'update-tabs', body: source}); 
         return;
+    }
 
     length = document.querySelectorAll(source.contentSelector).length;
-    if (length === 0)
+    if (length === 0) {
+        source.size = length;
+        chrome.runtime.sendMessage({text: 'update-tabs', body: source}); 
+        return;
+    }
+
+     if (length === source.size)
         return;
     
-    updateBadge(length);
+    source.size = length;
+    chrome.runtime.sendMessage({text: 'update-tabs', body: source}); 
+    
     clearTimeout(timeout);
     timeout  = setTimeout(() => chrome.runtime.sendMessage({text: 'pursue-process', body: source, url: document.location.href, body: document.documentElement.outerHTML}), source.delay);
 });

@@ -96,7 +96,7 @@ const setupView = (tabs, source, tag) => {
       setupGenerateButton();
       if (tag && tag.completed) {
         const size = spanSourceCount.data('size');
-        const plus = spanSourceCount.data('plus');
+        const plus = spanSourceCount.data('plus') === 'true';
         spanSourceCount.text(size + (plus ? '+' : '') + ' reviews');
         displayMessage('green', 'Airset for "' + tag.name + '" is created successfully!');
       }

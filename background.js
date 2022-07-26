@@ -64,7 +64,7 @@ chrome.runtime.onMessage.addListener(
       });
       return true;
     } else if (request.text === 'pursue-process') {
-      chrome.storage.local.get(['tabs'], (data) => {
+       chrome.storage.local.get(['tabs'], (data) => {
         let leaps = data.tabs ?? {};
         chrome.windows.getCurrent(window => {
           chrome.tabs.query({active: true, windowId: window.id}, tabs => {
@@ -125,6 +125,15 @@ chrome.runtime.onMessage.addListener(
             const process = leaps[tabs[0].id];
             leaps[tabs[0].id] = { ...process, isWorking: false };
             chrome.storage.local.set({'tabs': leaps}, () => { return true; });
+            setTimeout(() => { 
+              chrome.windows.getCurrent(window => {
+                chrome.tabs.query({active: true, windowId: window.id}, tabs => {
+                  const process = leaps[tabs[0].id];
+                  delete leaps[tabs[0].id];  
+                  chrome.storage.local.set({'tabs': leaps}, () => { return true; });
+                })
+              })
+            }, 5000);
           });
         })
       });
