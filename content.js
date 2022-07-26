@@ -1,4 +1,5 @@
 var source = null;
+var hebele = 0;
 
 function sendUpdateTabs() {
     let length = document.querySelectorAll(source.contentSelector).length;
@@ -9,6 +10,7 @@ function sendUpdateTabs() {
 }
 
 window.addEventListener('load', () => {
+    chrome.runtime.sendMessage({text: 'pursue-process', body: source, url: document.location.href, body: document.documentElement.outerHTML});
     chrome.storage.sync.get(['kimola_cognitive_airset_sources'], function(sources) {
         let hostMatch = false, patternMatch = false;
         for (let i in sources.kimola_cognitive_airset_sources) {
@@ -53,6 +55,7 @@ var validationObserver = new MutationObserver(function() {
 var contentObserver = new MutationObserver(function() {
     if (document.querySelectorAll(source.validationSelector).length > 0) {
         sendUpdateTabs();
+        chrome.runtime.sendMessage({text: 'pursue-process', body: source, url: document.location.href, body: document.documentElement.outerHTML});
     }
 });
 
@@ -62,7 +65,12 @@ chrome.runtime.onMessage.addListener(
             sendResponse({ url: document.location.href, body: document.documentElement.outerHTML });
         } else if (request.text === 'get-availability')
             sendResponse(source);
-        else if (request.text === 'navigate')
-            window.location.href = request.next;
+        else if (request.text === 'action') {
+            if (request.next) {
+                const element = document.querySelector(request.next);
+                if (element)
+                    element.click();
+            }
+        }
     }
 );
