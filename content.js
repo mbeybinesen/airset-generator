@@ -28,9 +28,12 @@ window.addEventListener('load', () => {
 });
 
 var contentObserver = new MutationObserver(() => {
-    let length = document.querySelectorAll(source.validationSelector).length;
+    let length = 0, html = null;
+
+    length = document.querySelectorAll(source.validationSelector).length;
     if (length === 0) {
         source.size = length;
+        html = null;
         chrome.runtime.sendMessage({text: 'update-tabs', body: source}); 
         return;
     }
@@ -38,14 +41,18 @@ var contentObserver = new MutationObserver(() => {
     length = document.querySelectorAll(source.contentSelector).length;
     if (length === 0) {
         source.size = length;
+        html = null;
         chrome.runtime.sendMessage({text: 'update-tabs', body: source}); 
         return;
     }
+    else
+        html = document.querySelector(source.contentSelector).outerHTML;
 
-     if (length === source.size)
+     if (length === source.size && html === source.html)
         return;
     
     source.size = length;
+    source.html = html;
     chrome.runtime.sendMessage({text: 'update-tabs', body: source}); 
     
     clearTimeout(timeout);
