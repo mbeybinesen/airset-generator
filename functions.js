@@ -1,4 +1,4 @@
-const apiUrl = 'https://localhost:7142/v1/'; //https://api.kimola.com/v1/
+const apiUrl = 'https://api.kimola.com/v1/';
 
 export default function generateAirset(apiKey, url, index, code, next, body) {
   const requestUrl = apiUrl + 'cognitive/airsets?url=' + encodeURIComponent(url) + (index ? ('&index=' + index) : '') + (code ? ('&code=' + code) : '') + (next ? ('&next=' + next) : '');

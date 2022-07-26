@@ -1,7 +1,7 @@
 import generateAirset from './functions.js';
 
 let apiKey;
-const apiUrl = 'https://localhost:7142/v1/'; //https://api.kimola.com/v1/
+const apiUrl = 'https://api.kimola.com/v1/';
 
 const divAvailable = $('#div-source-available');
 const divUnavailable = $('#div-source-unavailable');
