@@ -1,6 +1,6 @@
 import generateAirset from './functions.js';
 
-const apiUrl = 'https://localhost:7142/v1/'; //https://api.kimola.com/v1/
+const apiUrl = 'https://api.kimola.com/v1/';
 let apiKey;
 
 const setSources = () => {
