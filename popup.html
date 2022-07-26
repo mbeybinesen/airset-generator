@@ -3,55 +3,42 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" type="text/css" rel="noopener" href="/styles/bootstrap.css" />
-    <link rel="stylesheet" type="text/css" rel="noopener" href="/styles/fontawesome.css" />
-    <link rel="stylesheet" type="text/css" rel="noopener" href="/styles/main.css" />
+    <link rel="stylesheet" type="text/css" rel="noopener" href="./styles/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" rel="noopener" href="./styles/fontawesome.css" />
+    <link rel="stylesheet" type="text/css" rel="noopener" href="./styles/main.css" />
   </head>
-  <body class="width-700px p-5">
-    <div class="d-flex">
-      <div class="me-3">
-        <img src="/images/kimola-cognitive.png" class="width-80px" />
-      </div>
-      <div class="pt-1">
-        <h1 class="font-2_1 fw-bold line-height-1_8 mb-2">Airset Generator</h1>
-        <p class="font-1_3 line-height-2_2">This tiny browser extension helps you create datasets from supported internet sources to analyze and classify on <a href="https://kimola.com" target="_blank" class="color-green">Kimola</a>.</p>
-      </div>
-    </div>
-    <div id="div-source-available" class="border-rad-3px border-solid border-1px border-green py-3 px-4 bg-color-green-0_1 color-green mt-5 d-none">
-      <div class="d-flex justify-content-between">
-        <div>
-          <span class="d-block">Create an airset from</span>
-          <span class="d-block"><span id="spn-source-name" class="fw-bolder"></span> available on this page</span>
+  <body class="width-700px">
+    <div class="d-flex flex-column p-5 h-100">
+      <div>
+        <div class="mb-3 d-flex">
+          <a href="https://kimola.com" class="outline-none d-inline-block mx-auto"><img src="./images/kimola.png" class="height-24px" /></a>
         </div>
-        <div class="d-flex">
-          <a id="btn-generate" href="#" class="border-rad-3px font-1_4 fw-semibold text-decoration-none bg-color-grad-green color-white my-auto px-5 py-2">Generate!</a>
+        <div class="text-center">
+          <h1 class="font-2_5 line-height-1_8 mb-2">Airset Generator</h1>
+          <p class="font-1_3 line-height-2_2">Create datasets from supported mediums instantly!</p>
         </div>
       </div>
-    </div>
-    <div id="div-source-unavailable" class="border-rad-3px border-solid border-1px border-green py-3 px-4 bg-color-green-0_1 color-dark-gray mt-5 d-none">
-      <div class="d-flex justify-content-between">
-        <div>
-          <span class="d-block">This bar will be available</span>
-          <span class="d-block">on a <span class="fw-bolder">supported website</span> to create an airset.</span>
+      <div class="py-3 my-4">
+        <div id="div-source-available" class="border-rad-3px border-solid border-1px border-green py-4 px-5 bg-color-green-0_1 text-center d-none">
+          <span id="span-source-count" class="d-inline-block font-0_9 fw-semibold mb-1"></span>
+          <span id="span-source" class="d-block d-flex justify-content-center font-1_3 fw-bolder text-truncate mb-3"></span>
+          <a id="btn-generate" href="#" class="d-inline-block border-rad-3px font-1_1 fw-bold text-decoration-none bg-color-grad-green color-white my-auto px-5 py-2">Generate!</a>
+          <a id="btn-stop" href="#" class="d-inline-block border-rad-3px font-1_1 fw-bold text-decoration-none bg-color-grad-green color-white my-auto px-5 py-2 d-none"></a>
         </div>
-        <div class="d-flex">
-          <a href="#" class="border-rad-3px font-1_4 fw-semibold text-decoration-none bg-color-dark-gray color-light-gray cursor-not-allowed my-auto px-5 py-2">Generate</a>
+        <div id="div-source-unavailable" class="border-rad-3px border-solid border-1px border-mid-gray p-4 bg-color-light-gray color-dark-gray text-center d-none">
+          <span class="font-1_2 d-block">There isn't any review available to create an airset.</span>
+        </div>
+        <div id="div-apikey-does-not-exists" class="border-rad-3px border-solid border-1px border-yellow p-4 bg-color-yellow-0_1 text-center color-brown d-none">
+          <span class="d-block font-1_3 text-truncate mb-2">Enter your API key to get started!</span>
+          <a id="btn-setup" href="#" class="d-inline-block border-rad-3px font-1_1 fw-bold text-decoration-none bg-color-yellow color-white my-auto px-5 py-2">Set Up!</a>
         </div>
       </div>
-    </div>
-    <div id="div-apikey-does-not-exists" class="border-rad-3px border-solid border-1px border-yellow py-3 px-4 bg-color-yellow-0_1 color-brown mt-5 d-none">
-      <div class="d-flex justify-content-between">
-        <div class="flex-fill">
-          <span class="d-block font-1_1">There isn't any API key provided.</span>
-          <span class="d-block">Let's just <span href="" class="fw-bolder"> get you started!</span></span>
-        </div>
-        <div class="d-flex">
-          <a id="btn-setup" href="#" class="border-rad-3px font-1_4 fw-semibold text-decoration-none bg-color-yellow color-white my-auto px-5 py-2">Set Up!</a>
-        </div>
+      <div class="d-flex justify-content-between font-0_9 color-dark-gray mt-auto">
+        <span class="d-inline-block">Learn more about <a href="https://kimola.com/cognitive" target="_blank" class="color-dark-gray">Airsets</a>.</span>
+        <span class="d-inline-block">Provided by <a href="https://kimola.com" target="_blank" class="color-dark-gray">Kimola</a></span>
       </div>
     </div>
-    <div class="font-0_9 color-dark-gray mt-4">Learn more about <a href="#" target="_blank" class="color-dark-gray">Airsets</a> provided by <a href="#" target="_blank" class="color-dark-gray">Kimola</a>.</div>
-    <script src="/popup.js"></script>
+    <script src="/popup.js" type="module"></script>
     <script src="/scripts/jquery.js"></script>
     <script src="/scripts/bootstrap.js"></script>
   </body>

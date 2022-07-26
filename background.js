@@ -1,71 +1,131 @@
-function setSources() {
-  fetch('https://api.kimola.com/v1/cognitive/airsets/sources')
+import generateAirset from './functions.js';
+
+const apiUrl = 'https://localhost:7142/v1/'; //https://api.kimola.com/v1/
+let apiKey;
+
+const setSources = () => {
+  fetch(apiUrl + 'cognitive/airsets/sources')
   .then(response => response.json())
   .then(json => chrome.storage.sync.set({ 'kimola_cognitive_airset_sources': json }))
 }
 
 chrome.runtime.onInstalled.addListener(() => {
-  this.setSources();
+  setSources();
 });
 
 chrome.runtime.onStartup.addListener(() => {
-  this.setSources();
+  setSources();
+  const leaps = {};
+  chrome.storage.local.set({ 'tabs': leaps });
 });
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.text === 'update-tabs') {
       if (sender && sender.tab && sender.tab.id) {
-        chrome.storage.local.get(['kimola_cognitive_tabs'], function(data) {
-          let tabs = data.kimola_cognitive_tabs ?? {};
-          if (request.body)
-            tabs[sender.tab.id] = request.body;
-          else
-            delete tabs[sender.tab.id];
-          chrome.storage.local.set({'kimola_cognitive_tabs': tabs});
-          chrome.storage.local.set({'kimola_cognitive_source': request.body});
-          chrome.action.setBadgeText({ tabId: sender.tab.id, text: request.body.size === 0 ? '' : request.body.size.toString() });
-          chrome.action.setBadgeBackgroundColor({ tabId: sender.tab.id, color: '#fd4e26' });
-        });
+        chrome.storage.local.set({'kimola_cognitive_source': request.body});
+        chrome.action.setBadgeText({ tabId: sender.tab.id, text: request.body.size === 0 ? '' : request.body.size.toString() });
+        chrome.action.setBadgeBackgroundColor({ tabId: sender.tab.id, color: '#fd4e26' });
+        return true;
       }
-      return true;
-    } else if (request.text === 'generate-airset') {
-      chrome.storage.sync.get(['kimola_cognitive_api_key'], function(apikey) {
-
+    } else if (request.text === 'start-process') {
+      chrome.storage.local.get(['tabs'], (data) => {
+        const leaps = data.tabs ?? {};
         chrome.windows.getCurrent(window => {
           chrome.tabs.query({active: true, windowId: window.id}, tabs => {
-            chrome.tabs.sendMessage(tabs[0].id, {text: 'get-content'}, function(reply) {
-              fetch(reply.url, { method: 'POST', headers: { 'accept': '*/*', 'Content-Type': 'application/json-patch+json', 'Authorization': 'Bearer ' + apikey.kimola_cognitive_api_key }, body: JSON.stringify(reply.body) })
-                .then(response =>  {
-                  if (response.ok)
-                  return response.json();
-                else
-                  return response.text().then(error => { throw ({ message: error, status: response.status }) });
-                })
-                .then(json => sendResponse({ status: 'ok', body: json}))
-                .catch(error => sendResponse({ status: 'error', body: error}));
+            chrome.tabs.sendMessage(tabs[0].id, { text: 'get-content'}, (reply) => {
+              leaps[tabs[0].id] = { isWorking: true };
+              chrome.storage.local.set({ 'tabs': leaps });
+              generateAirset(request.apiKey, reply.url, null, null, null, reply.body)
+              .then((result) => {
+                leaps[tabs[0].id] = { ...leaps[tabs[0].id], index: result.index, code: result.code, name: result.name, next: result.next };
+                if (result.next) {
+                  chrome.storage.local.set({ 'tabs': leaps }, () => {
+                    console.log('update-tabs', leaps);
+                    sendResponse({ success: true, message: 'continues', body: result });
+                    chrome.tabs.sendMessage(tabs[0].id, { next: result.next, text: 'action' });
+                  });
+                }
+                else {
+                  chrome.storage.local.set({ 'tabs': leaps }, () => {
+                    delete leaps[tabs[0].id];
+                    chrome.storage.local.set({ 'tabs': leaps }, () => sendResponse({ success: true, message: 'completed' }));
+                  });
+                }
+              })
+              .catch((error) => {
+                delete leaps[tabs[0].id];
+                chrome.storage.local.set({ 'tabs': leaps }, () => sendResponse({ success: false, message: 'error', body: error }));
+              })
             });
-          });
-        });
-
-        // chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        // });
-      });
-
-
-      return true;
-    } else if (request.text === 'get-availability') {
-      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        if (tabs.length > 0) {
-          chrome.tabs.sendMessage(tabs[0].id, {text: 'get-availability'}, function(reply) {
-            sendResponse(reply);
+            return true;
           });
           return true;
-        }
-        else
-          sendResponse(null);
+        });
+        return true;
       });
       return true;
+    } else if (request.text === 'pursue-process') {
+      chrome.storage.local.get(['tabs'], (data) => {
+        let leaps = data.tabs ?? {};
+        chrome.windows.getCurrent(window => {
+          chrome.tabs.query({active: true, windowId: window.id}, tabs => {
+            let process = leaps[tabs[0].id];
+            if (process && tabs[0].id === sender.tab.id) {
+              if (process.isWorking) {
+                chrome.storage.sync.get(['kimola_cognitive_api_key'], (data) => {
+                  apiKey = data.kimola_cognitive_api_key;
+                  chrome.tabs.sendMessage(tabs[0].id, { text: 'get-content'}, (reply) => {
+                    generateAirset(apiKey, reply.url, process.index, process.code, process.next, reply.body)
+                    .then((result) => {
+                      if (result.next) {
+                        chrome.storage.local.get(['tabs'], (data) => { 
+                          leaps = data.tabs ?? {};
+                          if (leaps[tabs[0].id].isWorking) {
+                            leaps[tabs[0].id] = { ...leaps[tabs[0].id], index: result.index, next: result.next };
+                            chrome.storage.local.set({'tabs': leaps}, () => {
+                              chrome.tabs.sendMessage(tabs[0].id, { next: process.next, text: 'action' });
+                              return true;
+                            });
+                          }
+                          else {
+                            delete leaps[tabs[0].id];
+                            chrome.storage.local.set({'tabs': leaps}, () => { return true; });
+                          }
+                        });
+                      }
+                      else {
+                        delete leaps[tabs[0].id];
+                        chrome.storage.local.set({'tabs': leaps}, () => { return true; });
+                      }
+                    })
+                    .catch(() => {
+                      delete leaps[tabs[0].id];
+                      chrome.storage.local.set({'tabs': leaps}, () => { return true; });
+                    })
+                  });
+                });
+              } else {
+                delete leaps[tabs[0].id];
+                chrome.storage.local.set({'tabs': leaps}, () => { return true; });
+              }
+            }
+            else
+              return true;
+          });
+        })
+      });
+    } else if (request.text === 'stop-process') {
+      chrome.storage.local.get(['tabs'], (data) => {
+        const leaps = data.tabs ?? {};
+        chrome.windows.getCurrent(window => {
+          chrome.tabs.query({active: true, windowId: window.id}, tabs => {
+            const process = leaps[tabs[0].id];
+            leaps[tabs[0].id] = { ...process, isWorking: false };
+            chrome.storage.local.set({'tabs': leaps}, () => { return true; });
+          });
+        })
+      });
     }
   }
 );
