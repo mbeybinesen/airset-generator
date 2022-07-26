@@ -1,8 +1,7 @@
-var source = null;
-var hebele = 0;
+let source = null;
+let timeout;
 
-function sendUpdateTabs() {
-    let length = document.querySelectorAll(source.contentSelector).length;
+function updateBadge(length) {
     if (length !== source.size) {
         source.size = length;
         chrome.runtime.sendMessage({text: 'update-tabs', body: source}); 
@@ -10,7 +9,6 @@ function sendUpdateTabs() {
 }
 
 window.addEventListener('load', () => {
-    chrome.runtime.sendMessage({text: 'pursue-process', body: source, url: document.location.href, body: document.documentElement.outerHTML});
     chrome.storage.sync.get(['kimola_cognitive_airset_sources'], function(sources) {
         let hostMatch = false, patternMatch = false;
         for (let i in sources.kimola_cognitive_airset_sources) {
@@ -29,34 +27,25 @@ window.addEventListener('load', () => {
                 break;
             }
         }
-        if (patternMatch) {
-            let validationElement = document.querySelector(source.validationSelector);
-            if (validationElement === null) {
-                validationObserver.observe(document.body, { subtree: true, childList: true });
-            }
-            else {
-                sendUpdateTabs();
-                contentObserver.observe(document.querySelector(source.validationSelector), { subtree: true, childList: true });
-            }
-        }
-        else if (hostMatch) {
-            validationObserver.observe(document.body, { subtree: true, childList: true });
+        if (patternMatch || hostMatch) {
+            timeout  = setTimeout(() => chrome.runtime.sendMessage({text: 'pursue-process', body: source, url: document.location.href, body: document.documentElement.outerHTML}), source.delay);
+            contentObserver.observe(document.body, { subtree: true, childList: true });
         }
     });
 });
 
-var validationObserver = new MutationObserver(function() {
-    if (document.querySelectorAll(source.validationSelector).length > 0) {
-        sendUpdateTabs();
-        contentObserver.observe(document.querySelector(source.validationSelector), { subtree: true, childList: true });
-    }
-});
+var contentObserver = new MutationObserver(() => {
+    let length = document.querySelectorAll(source.validationSelector).length;
+    if (length === 0)
+        return;
 
-var contentObserver = new MutationObserver(function() {
-    if (document.querySelectorAll(source.validationSelector).length > 0) {
-        sendUpdateTabs();
-        chrome.runtime.sendMessage({text: 'pursue-process', body: source, url: document.location.href, body: document.documentElement.outerHTML});
-    }
+    length = document.querySelectorAll(source.contentSelector).length;
+    if (length === 0)
+        return;
+    
+    updateBadge(length);
+    clearTimeout(timeout);
+    timeout  = setTimeout(() => chrome.runtime.sendMessage({text: 'pursue-process', body: source, url: document.location.href, body: document.documentElement.outerHTML}), source.delay);
 });
 
 chrome.runtime.onMessage.addListener(
@@ -71,6 +60,7 @@ chrome.runtime.onMessage.addListener(
                 if (element)
                     element.click();
             }
+            sendResponse(null);
         }
     }
 );
