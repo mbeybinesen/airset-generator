@@ -1,8 +1,8 @@
 {
-  "name": "Kimola Cognitive",
+  "name": "Airset Generator",
   "manifest_version": 3,
   "version": "1.0",
-  "description": "Turn web sources into a research with Kimola Cognitive.",
+  "description": "Create datasets from supported mediums to analyze and classify on Kimola Cognitive.",
   "icons": {
     "16": "/images/kimola-cognitive-16.png",
     "32": "/images/kimola-cognitive-32.png",
@@ -26,6 +26,6 @@
   ],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Click on me!"
+    "default_title": "Click to generate airsets!"
   }
 }
