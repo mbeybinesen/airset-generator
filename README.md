@@ -24,6 +24,7 @@ Kimola Airset Generator currently supports;
 - Reddit (Go to a post with comments - e.g., https://www.reddit.com/r/mildlyinfuriating/comments/w1jxyw/my_friend_group_forgot_today_is_my_birthday_and/)
 - Instagram (Go to a post with comments - e.g., https://www.instagram.com/p/CgKiDqdlXba/)
 - Google Play (Go to a webpage of an app and select its reviews and wait until the modal which includes reviews open - e.g., https://play.google.com/store/apps/details?id=notion.id&hl=tr&gl=US)
+- Amazon.com (Go to a product with reviews, click on "all reviews" - e.g., https://www.amazon.com/Fiodio-Mechanical-Keyboards-Anti-Ghosting-Multi-Media/product-reviews/B09NNF3K2C/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews
 
 ## Generating Airset
 When on a web site supported by Kimola Airset Generator, you will see the badge on the icon. Badge displays the number of comments can be scraped.
