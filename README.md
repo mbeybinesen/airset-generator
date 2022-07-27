@@ -1,5 +1,7 @@
 # Kimola Airset Generator
 This tiny browser extension helps you to generate datasets to analyze and classify on [Kimola](https://kimola.com/) products.
+
+**Important: You have to set up this extension after you complete onboarding at Kimola Cognitive, since you will need an API key that you can access after finishing the onboarding.**
  
 Installation Instructions
 
