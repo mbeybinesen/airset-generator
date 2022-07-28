@@ -49,10 +49,6 @@ var contentObserver = new MutationObserver(() => {
     count = document.querySelectorAll(source.contentSelector).length;
     size = document.querySelector(source.contentSelector).outerHTML.length;
 
-    console.log('content.js / observer goes on', source);
-    console.log('count', count);
-    console.log('size', size);
-
     if (count === source.count && size === source.size)
         return;
     

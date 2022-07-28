@@ -17,7 +17,6 @@ const getAirsets = () => {
   fetch(apiUrl + 'cognitive/airsets?pageSize=5', { method: 'GET', headers: { 'accept': '*/*', 'Content-Type': 'application/json-patch+json', 'Authorization': 'Bearer ' + apiKey } })
   .then(response => response.json())
   .then(json => {
-    console.log(json);
     divAirsets.html('');
     if (json.items.length > 0) {
       let ul = $('<ul class="list-style-none ps-1 my-2"></ul>');
@@ -27,7 +26,7 @@ const getAirsets = () => {
       divAirsets.append(ul);
       divAirsets.append('<a href="https://cognitive.kimola.com/airsets" target="_blank" class="fw-semibold d-inline-block hover mt-2">All Airsets<i class="fa-solid fa-angle-right ms-1"></i></a>');
     }
-  }).catch((error) => { console.log(error); })
+  })
 }
 
 chrome.storage.onChanged.addListener((meta) => {
@@ -138,6 +137,7 @@ const setupView = (tabs, source, tag) => {
         const plus = spanSourceCount.data('plus') === 'true';
         spanSourceCount.text(count + (plus ? '+' : '') + ' reviews');
         displayMessage('green', 'Airset for "' + tag.name + '" is created successfully!');
+        getAirsets();
       }
     }
   });
