@@ -4,7 +4,6 @@ let timeout;
 window.addEventListener('load', () => {
     chrome.storage.sync.get(['sources1', 'sources2', 'sources3', 'sources4', 'sources5'], (data) => {
         const sources = [ ...(data.sources1 ?? []), ...(data.sources2 ?? []), ...(data.sources3 ?? []), ...(data.sources4 ?? []), ...(data.sources5 ?? []) ];
-        console.log('content.js / sources ', sources);
         let hostMatch = false, patternMatch = false;
         for (let i in sources) {
             let regex = new RegExp(sources[i].pattern);

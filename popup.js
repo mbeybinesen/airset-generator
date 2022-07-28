@@ -1,14 +1,34 @@
+import { apiUrl } from './functions.js';
+
 let apiKey;
 
 const divAvailable = $('#div-source-available');
 const divUnavailable = $('#div-source-unavailable');
 const divSetUp = $('#div-apikey-does-not-exists');
+const divAirsets = $('#div-airsets');
 
 let spanSource = $('#span-source');
 let spanSourceCount = $('#span-source-count');
 
 let btnGenerate = $('#btn-generate');
 let btnStop = $('#btn-stop');
+
+const getAirsets = () => {
+  fetch(apiUrl + 'cognitive/airsets?pageSize=5', { method: 'GET', headers: { 'accept': '*/*', 'Content-Type': 'application/json-patch+json', 'Authorization': 'Bearer ' + apiKey } })
+  .then(response => response.json())
+  .then(json => {
+    console.log(json);
+    divAirsets.html('');
+    if (json.items.length > 0) {
+      let ul = $('<ul class="list-style-none ps-1 my-2"></ul>');
+      for (let i = 0; i < json.items.length; i++)
+        ul.append('<li class="mb-2"><a href="https://cognitive.kimola.com/airsets/' + json.items[i].sourceUrl + '/overview" target="_blank" class="d-inline-block d-flex hover text-truncate d-flex"><span class="d-iline-block me-2 my-auto" style="background-image: url(\'' + json.items[i].iconUrl + '\'); background-position: 50% 50%; background-size: contain; background-repeat: no-repeat; width: 18px; height: 18px;" title="' + json.items[i].name + '"></span><span class="d-inline-block  line-height-1_0em my-auto">' + json.items[i].name + (json.items[i].size > 1 ? (' (' + json.items[i].size + ' reviews)') : '') + '</span></a></li>');
+      divAirsets.append('<span class="fw-bold d-block mt-5">Latest Airsets</span>');
+      divAirsets.append(ul);
+      divAirsets.append('<a href="https://cognitive.kimola.com/airsets" target="_blank" class="fw-semibold d-inline-block hover mt-2">All Airsets<i class="fa-solid fa-angle-right ms-1"></i></a>');
+    }
+  }).catch((error) => { console.log(error); })
+}
 
 chrome.storage.onChanged.addListener((meta) => {
   if (meta.tabs) {
@@ -46,11 +66,30 @@ window.addEventListener('load', () => {
               spanSource.attr('title', tabs[0].title);
               spanSourceCount.text(source.count + (source.isContinuous ? '+' : '') + ' reviews').data('count', source.count).data('plus', source.isContinuous.toString());
               setupView(tabs, source, null);
+              getAirsets();
             } else {
               //if source is not assigned, don't take any action and just make sure to display the right div.
               divUnavailable.removeClass('d-none');
               if (!divAvailable.hasClass('d-none'))
                 divAvailable.addClass('d-none');
+              chrome.storage.sync.get(['sources1', 'sources2', 'sources3', 'sources4', 'sources5'], (data) => {
+                const sources = [ ...(data.sources1 ?? []), ...(data.sources2 ?? []), ...(data.sources3 ?? []), ...(data.sources4 ?? []), ...(data.sources5 ?? []) ];
+                const div = $('<div class="w-100 d-flex my-2"></div>');
+                const ul = $('<ul class="d-flex justify-content-center flex-wrap list-style-none w-75 mx-auto"></ul>');
+                for (let i in sources) {
+                  if (!sources[i].iconUrl)
+                    continue;
+                  const li = $('<li class="m-2"></li>');
+                  if (sources[i].helpUrl)
+                    li.append('<a href="' + sources[i].helpUrl + '" target="_blank" class="d-block" style="background-image: url(\'' + sources[i].iconUrl + '\'); background-position: 50% 50%; background-size: contain; background-repeat: no-repeat; width: 24px; height: 24px;" title="' + sources[i].name + '"></a>');
+                  else
+                    li.append('<span class="d-block" style="background-image: url(\'' + sources[i].iconUrl + '\'); background-position: 50% 50%; background-size: contain; background-repeat: no-repeat; width: 24px; height: 24px;" title="' + sources[i].name + '"></span>');
+                  ul.append(li);
+                }
+                div.append(ul);
+                divUnavailable.append('<span class="fw-bold text-center d-block mt-4">Supported Mediums</span>');
+                divUnavailable.append(div);
+              });
             }
           });
         });
