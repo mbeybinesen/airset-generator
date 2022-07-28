@@ -5,7 +5,27 @@ let apiKey;
 const setSources = () => {
   fetch(apiUrl + 'cognitive/airsets/sources')
   .then(response => response.json())
-  .then(json => chrome.storage.sync.set({ 'kimola_cognitive_airset_sources': json }))
+  .then(json => {
+    let sources = { sources1: [], sources2: [], sources3: [], sources4: [], sources5: [] };
+    let iteration = 1, key;
+    for (let i = 0; i < json.length; i++) {
+      key = `sources${iteration}`;
+      sources[key].push(json[i]);
+      if (sources[key].length === 10 || i === json.length - 1) {
+        if (iteration == 1)
+          chrome.storage.sync.set({ 'sources1': sources.sources1 });
+        else if (iteration == 2)
+          chrome.storage.sync.set({ 'sources2': sources.sources2 });
+        else if (iteration == 3)
+          chrome.storage.sync.set({ 'sources3': sources.sources3 });
+        else if (iteration == 4)
+          chrome.storage.sync.set({ 'sources4': sources.sources4 });
+        else if (iteration == 5)
+          chrome.storage.sync.set({ 'sources5': sources.sources5 });
+        iteration++;
+      }
+    }
+  })
 }
 
 chrome.runtime.onInstalled.addListener(() => {
@@ -14,16 +34,15 @@ chrome.runtime.onInstalled.addListener(() => {
 
 chrome.runtime.onStartup.addListener(() => {
   setSources();
-  const leaps = {};
-  chrome.storage.local.set({ 'tabs': leaps });
+  chrome.storage.local.remove(['tabs', 'source']);
 });
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.text === 'update-tabs') {
       if (sender && sender.tab && sender.tab.id) {
-        chrome.storage.local.set({'kimola_cognitive_source': request.body});
-        chrome.action.setBadgeText({ tabId: sender.tab.id, text: request.body.size === 0 ? '' : request.body.size.toString() });
+        chrome.storage.local.set({'source': request.body});
+        chrome.action.setBadgeText({ tabId: sender.tab.id, text: request.body.count === 0 ? '' : request.body.count.toString() });
         chrome.action.setBadgeBackgroundColor({ tabId: sender.tab.id, color: '#fd4e26' });
         return true;
       }

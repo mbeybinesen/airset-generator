@@ -2,21 +2,22 @@ let source = null;
 let timeout;
 
 window.addEventListener('load', () => {
-    chrome.storage.sync.get(['kimola_cognitive_airset_sources'], function(sources) {
+    chrome.storage.sync.get(['sources1', 'sources2', 'sources3', 'sources4', 'sources5'], (data) => {
+        const sources = [ ...(data.sources1 ?? []), ...(data.sources2 ?? []), ...(data.sources3 ?? []), ...(data.sources4 ?? []), ...(data.sources5 ?? []) ];
+        console.log('content.js / sources ', sources);
         let hostMatch = false, patternMatch = false;
-        for (let i in sources.kimola_cognitive_airset_sources) {
-            let regex = new RegExp(sources.kimola_cognitive_airset_sources[i].pattern);
+        for (let i in sources) {
+            let regex = new RegExp(sources[i].pattern);
             if (regex.test(document.location.href)) {
                 patternMatch = true;
                 hostMatch = true;
-                source = sources.kimola_cognitive_airset_sources[i];
+                source = sources[i];
                 break;
             }
-            regex = new RegExp(sources.kimola_cognitive_airset_sources[i].host);
-            if (regex.test(document.location.host)) {
+            if (sources[i].host === document.location.host) {
                 patternMatch = false;
                 hostMatch = true;
-                source = sources.kimola_cognitive_airset_sources[i];
+                source = sources[i];
                 break;
             }
         }
@@ -28,31 +29,36 @@ window.addEventListener('load', () => {
 });
 
 var contentObserver = new MutationObserver(() => {
-    let length = 0, html = null;
+    let length = 0, count = 0, size = 0;
 
     length = document.querySelectorAll(source.validationSelector).length;
     if (length === 0) {
-        source.size = length;
-        html = null;
+        source.count = 0;
+        source.size = 0;
         chrome.runtime.sendMessage({text: 'update-tabs', body: source}); 
         return;
     }
 
     length = document.querySelectorAll(source.contentSelector).length;
     if (length === 0) {
-        source.size = length;
-        html = null;
+        source.count = 0;
+        source.size = 0;
         chrome.runtime.sendMessage({text: 'update-tabs', body: source}); 
         return;
     }
-    else
-        html = document.querySelector(source.contentSelector).outerHTML;
 
-     if (length === source.size && html === source.html)
+    count = document.querySelectorAll(source.contentSelector).length;
+    size = document.querySelector(source.contentSelector).outerHTML.length;
+
+    console.log('content.js / observer goes on', source);
+    console.log('count', count);
+    console.log('size', size);
+
+    if (count === source.count && size === source.size)
         return;
     
-    source.size = length;
-    source.html = html;
+    source.count = count;
+    source.size = size;
     chrome.runtime.sendMessage({text: 'update-tabs', body: source}); 
     
     clearTimeout(timeout);

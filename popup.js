@@ -33,8 +33,8 @@ window.addEventListener('load', () => {
         chrome.tabs.query({active: true, windowId: window.id}, tabs => {
           //check if the active tab is available
           chrome.tabs.sendMessage(tabs[0].id, { text: 'get-availability' }, (source) => {
-            //if source is assigned but size property is useless, take source as null.
-            if (source && (source.size === null || source.size === undefined || source.size === 0))
+            //if source is assigned but count property is useless, take source as null.
+            if (source && (source.count === null || source.count === undefined || source.count === 0))
               source = null;
             if (source) {
               //if source is assigned display the action button.
@@ -44,7 +44,7 @@ window.addEventListener('load', () => {
               //display the source information
               spanSource.html((tabs[0].favIconUrl ? '<img class="height-16px my-auto me-1" src="' + tabs[0].favIconUrl + '" />' : '') + '<span class="my-auto">' + tabs[0].title + '</span>');
               spanSource.attr('title', tabs[0].title);
-              spanSourceCount.text(source.size + (source.isContinuous ? '+' : '') + ' reviews').data('size', source.size).data('plus', source.isContinuous.toString());
+              spanSourceCount.text(source.count + (source.isContinuous ? '+' : '') + ' reviews').data('count', source.count).data('plus', source.isContinuous.toString());
               setupView(tabs, source, null);
             } else {
               //if source is not assigned, don't take any action and just make sure to display the right div.
@@ -95,9 +95,9 @@ const setupView = (tabs, source, tag) => {
     else {
       setupGenerateButton();
       if (tag && tag.completed) {
-        const size = spanSourceCount.data('size');
+        const count = spanSourceCount.data('count');
         const plus = spanSourceCount.data('plus') === 'true';
-        spanSourceCount.text(size + (plus ? '+' : '') + ' reviews');
+        spanSourceCount.text(count + (plus ? '+' : '') + ' reviews');
         displayMessage('green', 'Airset for "' + tag.name + '" is created successfully!');
       }
     }
