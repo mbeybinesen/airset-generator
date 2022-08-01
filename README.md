@@ -11,10 +11,13 @@ Google Chrome
 2. Unzip the file and you should have a folder named kimola-airset-generator.
 3. In Chrome go to the extensions page (chrome://extensions).
 4. Switch to "Developer Mode" on the right-top corner.
-5. Drag the kimola-airset-generator folder anywhere on the page to import it (do not delete the folder afterwards).  
-6. Go to your Kimola Cognitive dashboard.
-7. Choose "Models" from the left menu or go to https://cognitive.kimola.com/models directly.
-8. On the left side, you will see the API Key. Copy your API Key and paste to Airset Generator and complete installation.
+5. Drag the kimola-airset-generator folder anywhere on your desktop to import it (do not delete the folder afterwards).  
+6. Click "Load Unpacked" and find folder and upload it. 
+7. Click on the "Details" and then "Extension Options" and it will need an API key.
+8. To find the API key, go to your Kimola Cognitive dashboard.
+9. Choose "Models" from the left menu or go to https://cognitive.kimola.com/models directly.
+10. On the right side, you will see the API Key. Copy your API Key and paste it to the window that is opened on Chrome  and complete installation.
+11. Bookmark your extension to your browser and find reviews on supported mediums.
 
 When you've completed these steps you are ready to use Kimola Airset Generator. 
 
@@ -30,7 +33,7 @@ Kimola Airset Generator currently supports;
 - Trustpilot (Go to the page of a business that has reviews - e.g., https://www.trustpilot.com/review/panaceafinancial.com
 
 ## Generating Airset
-When on a web site supported by Kimola Airset Generator, you will see the badge on the icon. Badge displays the number of comments can be scraped.
+When on a web site supported by Kimola Airset Generator, you will see the red badge on the icon. Badge displays the number of comments that will be scraped.
 ![extension-with-a-badge](https://user-images.githubusercontent.com/2235594/179510551-d1f4203e-8106-413f-92af-6b368f0fbb5a.png)
 
 If you can not see a red badge on the icon as expected, reload the page or see "all reviews" page if there is one. 
