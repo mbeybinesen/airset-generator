@@ -59,10 +59,8 @@ chrome.runtime.onMessage.addListener(
                 if (result.next) {
                   chrome.storage.local.set({ 'tabs': leaps }, () => {
                     sendResponse({ success: true, message: 'continues', body: result });
-                    console.log('background.js / continues / sendMessage gidecek');
                     chrome.tabs.sendMessage(tabs[0].id, { next: result.next, text: 'action' });
-                    console.log('background.js / continues / sendMessage gitti');
-                  });
+                      });
                 }
                 else {
                   chrome.storage.local.set({ 'tabs': leaps }, () => {
@@ -79,7 +77,6 @@ chrome.runtime.onMessage.addListener(
           });
         });
       });
-      console.log('background.js / start-process / true donecek');
       return true; // keep the messaging channel open to call sendResponse
     } else if (request.text === 'pursue-process') {
       chrome.storage.local.get(['tabs'], (data) => {
@@ -132,15 +129,11 @@ chrome.runtime.onMessage.addListener(
               }
             }
             else {
-              console.log('background.js / pursue-process / request', request);
-              console.log('background.js / pursue-process / sender', sender);
-              //return true;
+              return true;
             }
           });
         })
       });
-      // console.log('background.js / pursue-process / true donecek');
-      // return true; // keep the messaging channel open to call sendResponse
     } else if (request.text === 'stop-process') {
       chrome.storage.local.get(['tabs'], (data) => {
         const leaps = data.tabs ?? {};
@@ -161,8 +154,6 @@ chrome.runtime.onMessage.addListener(
           });
         })
       });
-      // console.log('background.js / stop-process / true donecek');
-      // return true; // keep the messaging channel open to call sendResponse
     }
   }
 );

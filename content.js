@@ -10,9 +10,6 @@ const manageProcess = () => {
 const manageContent = () => {
     let length = 0, count = 0, size = 0;
 
-    console.log('manageContent / document.querySelectorAll(source.validationSelector).length', document.querySelectorAll(source.validationSelector).length);
-    console.log('manageContent / document.querySelectorAll(source.contentSelector).length', document.querySelectorAll(source.contentSelector).length);
-
     length = document.querySelectorAll(source.validationSelector).length;
     if (length === 0) {
         source.count = 0;
@@ -71,10 +68,6 @@ window.addEventListener('load', () => {
 
 var contentObserver = new MutationObserver(() => manageContent());
 
-// chrome.runtime.connect().onDisconnect.addListener(function() {
-//     console.log('content.js / disconnected');
-// })
-
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if (request.text === 'get-content') {
@@ -84,10 +77,8 @@ chrome.runtime.onMessage.addListener(
         else if (request.text === 'action') {
             if (request.next) {
                 const element = document.querySelector(request.next);
-                if (element) {
+                if (element)
                     element.click();
-                    console.log('content.js / action / click calisti');
-                }
                 sendResponse(null);
             }
         }
