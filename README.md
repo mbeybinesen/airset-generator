@@ -33,6 +33,6 @@ Kimola Airset Generator currently supports;
 When on a web site supported by Kimola Airset Generator, you will see the badge on the icon. Badge displays the number of comments can be scraped.
 ![extension-with-a-badge](https://user-images.githubusercontent.com/2235594/179510551-d1f4203e-8106-413f-92af-6b368f0fbb5a.png)
 
-If you can not see a red badge on the icon as expected, reload the page or see "all reviews" page if there is one. 
+If you can not see a red badge on the icon as expected, reload the page or see "all reviews" page if there is one. If you need to scroll down to see more coments, so does the Airset generator. To grab more comments, scroll down.
 After clicking on "Generate" button, you will see the counting starts. Click on the "stop" icon when you want to stop generating reviews.
 Go to Airsets on Cognitive dashboard to see and analyze your Airset https://cognitive.kimola.com/airsets
