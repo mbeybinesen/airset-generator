@@ -1,34 +1,17 @@
 let source = null;
 let timeout;
 
-window.addEventListener('load', () => {
-    chrome.storage.sync.get(['sources1', 'sources2', 'sources3', 'sources4', 'sources5'], (data) => {
-        const sources = [ ...(data.sources1 ?? []), ...(data.sources2 ?? []), ...(data.sources3 ?? []), ...(data.sources4 ?? []), ...(data.sources5 ?? []) ];
-        let hostMatch = false, patternMatch = false;
-        for (let i in sources) {
-            let regex = new RegExp(sources[i].pattern);
-            if (regex.test(document.location.href)) {
-                patternMatch = true;
-                hostMatch = true;
-                source = sources[i];
-                break;
-            }
-            if (sources[i].host === document.location.host) {
-                patternMatch = false;
-                hostMatch = true;
-                source = sources[i];
-                break;
-            }
-        }
-        if (patternMatch || hostMatch) {
-            timeout  = setTimeout(() => chrome.runtime.sendMessage({text: 'pursue-process', body: source, url: document.location.href, body: document.documentElement.outerHTML}), source.delay);
-            contentObserver.observe(document.body, { subtree: true, childList: true });
-        }
-    });
-});
+const manageProcess = () => {
+    if (timeout)
+        clearTimeout(timeout);
+    timeout  = setTimeout(() => chrome.runtime.sendMessage({text: 'pursue-process', body: source, url: document.location.href, body: document.documentElement.outerHTML}), source.delay);
+}
 
-var contentObserver = new MutationObserver(() => {
+const manageContent = () => {
     let length = 0, count = 0, size = 0;
+
+    console.log('manageContent / document.querySelectorAll(source.validationSelector).length', document.querySelectorAll(source.validationSelector).length);
+    console.log('manageContent / document.querySelectorAll(source.contentSelector).length', document.querySelectorAll(source.contentSelector).length);
 
     length = document.querySelectorAll(source.validationSelector).length;
     if (length === 0) {
@@ -56,9 +39,41 @@ var contentObserver = new MutationObserver(() => {
     source.size = size;
     chrome.runtime.sendMessage({text: 'update-tabs', body: source}); 
     
-    clearTimeout(timeout);
-    timeout  = setTimeout(() => chrome.runtime.sendMessage({text: 'pursue-process', body: source, url: document.location.href, body: document.documentElement.outerHTML}), source.delay);
+    manageProcess();
+}
+
+window.addEventListener('load', () => {
+    chrome.storage.sync.get(['sources1', 'sources2', 'sources3', 'sources4', 'sources5'], (data) => {
+        const sources = [ ...(data.sources1 ?? []), ...(data.sources2 ?? []), ...(data.sources3 ?? []), ...(data.sources4 ?? []), ...(data.sources5 ?? []) ];
+        let hostMatch = false, patternMatch = false;
+        for (let i in sources) {
+            let regex = new RegExp(sources[i].pattern);
+            if (regex.test(document.location.href)) {
+                patternMatch = true;
+                hostMatch = true;
+                source = sources[i];
+                break;
+            }
+            if (sources[i].host === document.location.host) {
+                patternMatch = false;
+                hostMatch = true;
+                source = sources[i];
+                break;
+            }
+        }
+        if (patternMatch || hostMatch) {
+            manageProcess();
+            manageContent();
+            contentObserver.observe(document.body, { subtree: true, childList: true });
+        }
+    });
 });
+
+var contentObserver = new MutationObserver(() => manageContent());
+
+// chrome.runtime.connect().onDisconnect.addListener(function() {
+//     console.log('content.js / disconnected');
+// })
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
@@ -69,10 +84,12 @@ chrome.runtime.onMessage.addListener(
         else if (request.text === 'action') {
             if (request.next) {
                 const element = document.querySelector(request.next);
-                if (element)
+                if (element) {
                     element.click();
+                    console.log('content.js / action / click calisti');
+                }
+                sendResponse(null);
             }
-            sendResponse(null);
         }
     }
 );

@@ -9,7 +9,7 @@
     "48": "/images/kimola-cognitive-48.png",
     "128": "/images/kimola-cognitive-128.png"
   },
-  "permissions": ["storage","activeTab","scripting"],
+  "permissions": ["storage","activeTab"],
   "background": {
     "service_worker": "background.js",
     "type": "module"

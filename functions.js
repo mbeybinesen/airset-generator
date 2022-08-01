@@ -19,4 +19,18 @@ function generateAirset(apiKey, url, index, code, next, body) {
   });
 }
 
-export { apiUrl, generateAirset }
+function limit(text, length, suffix) {
+  length = (suffix ? (length - suffix.length) : length);
+
+  if (text.length > length)
+  {
+    let sub = text.substring(0, length);
+    let index = sub.lastIndexOf(' ');
+
+    text = `${(index > -1 ? text.substring(0, index) : sub).trim()}${suffix}`;
+  }
+
+  return text;
+}
+
+export { apiUrl, generateAirset, limit }

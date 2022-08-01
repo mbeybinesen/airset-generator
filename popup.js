@@ -1,4 +1,4 @@
-import { apiUrl } from './functions.js';
+import { apiUrl, limit } from './functions.js';
 
 let apiKey;
 
@@ -19,14 +19,15 @@ const getAirsets = () => {
   .then(json => {
     divAirsets.html('');
     if (json.items.length > 0) {
-      let ul = $('<ul class="list-style-none ps-1 my-2"></ul>');
+      let ul = $('<ul class="list-style-none ps-1 my-3"></ul>');
       for (let i = 0; i < json.items.length; i++)
-        ul.append('<li class="mb-2"><a href="https://cognitive.kimola.com/airsets/' + json.items[i].sourceUrl + '/overview" target="_blank" class="d-inline-block d-flex hover text-truncate d-flex"><span class="d-iline-block me-2 my-auto" style="background-image: url(\'' + json.items[i].iconUrl + '\'); background-position: 50% 50%; background-size: contain; background-repeat: no-repeat; width: 18px; height: 18px;" title="' + json.items[i].name + '"></span><span class="d-inline-block  line-height-1_0em my-auto">' + json.items[i].name + (json.items[i].size > 1 ? (' (' + json.items[i].size + ' reviews)') : '') + '</span></a></li>');
+        ul.append('<li class="mb-2"><a href="https://cognitive.kimola.com/airsets/' + json.items[i].code + '/overview" target="_blank" class="d-inline-block hover text-truncate" title="' + json.items[i].name + '"><span class="d-flex"><span class="d-inline-block me-2 my-auto" style="background-image: url(\'' + json.items[i].iconUrl + '\'); background-position: 50% 50%; background-size: contain; background-repeat: no-repeat; width: 18px; height: 18px;" title="' + json.items[i].name + '"></span><span class="d-inline-block  line-height-1_0em my-auto">' + limit(json.items[i].name, 90, '...') + (json.items[i].size > 1 ? (' (' + json.items[i].size + ' reviews)') : '') + '</span></span></a></li>');
       divAirsets.append('<span class="fw-bold d-block mt-5">Latest Airsets</span>');
       divAirsets.append(ul);
       divAirsets.append('<a href="https://cognitive.kimola.com/airsets" target="_blank" class="fw-semibold d-inline-block hover mt-2">All Airsets<i class="fa-solid fa-angle-right ms-1"></i></a>');
     }
   })
+  .catch(() => divAirsets.html(''));
 }
 
 chrome.storage.onChanged.addListener((meta) => {
@@ -61,7 +62,7 @@ window.addEventListener('load', () => {
               if (!divUnavailable.hasClass('d-none'))
                 divUnavailable.addClass('d-none');
               //display the source information
-              spanSource.html((tabs[0].favIconUrl ? '<img class="height-16px my-auto me-1" src="' + tabs[0].favIconUrl + '" />' : '') + '<span class="my-auto">' + tabs[0].title + '</span>');
+              spanSource.html((tabs[0].favIconUrl ? '<img class="height-16px my-auto me-1" src="' + tabs[0].favIconUrl + '" />' : '') + '<span class="my-auto">' + limit(tabs[0].title, 60, '...') + '</span>');
               spanSource.attr('title', tabs[0].title);
               spanSourceCount.text(source.count + (source.isContinuous ? '+' : '') + ' reviews').data('count', source.count).data('plus', source.isContinuous.toString());
               setupView(tabs, source, null);

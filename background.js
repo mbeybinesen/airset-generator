@@ -44,7 +44,6 @@ chrome.runtime.onMessage.addListener(
         chrome.storage.local.set({'source': request.body});
         chrome.action.setBadgeText({ tabId: sender.tab.id, text: request.body.count === 0 ? '' : request.body.count.toString() });
         chrome.action.setBadgeBackgroundColor({ tabId: sender.tab.id, color: '#fd4e26' });
-        return true;
       }
     } else if (request.text === 'start-process') {
       chrome.storage.local.get(['tabs'], (data) => {
@@ -60,7 +59,9 @@ chrome.runtime.onMessage.addListener(
                 if (result.next) {
                   chrome.storage.local.set({ 'tabs': leaps }, () => {
                     sendResponse({ success: true, message: 'continues', body: result });
+                    console.log('background.js / continues / sendMessage gidecek');
                     chrome.tabs.sendMessage(tabs[0].id, { next: result.next, text: 'action' });
+                    console.log('background.js / continues / sendMessage gitti');
                   });
                 }
                 else {
@@ -73,17 +74,15 @@ chrome.runtime.onMessage.addListener(
               .catch((error) => {
                 delete leaps[tabs[0].id];
                 chrome.storage.local.set({ 'tabs': leaps }, () => sendResponse({ success: false, message: 'error', body: error }));
-              })
+              });
             });
-            return true;
           });
-          return true;
         });
-        return true;
       });
-      return true;
+      console.log('background.js / start-process / true donecek');
+      return true; // keep the messaging channel open to call sendResponse
     } else if (request.text === 'pursue-process') {
-       chrome.storage.local.get(['tabs'], (data) => {
+      chrome.storage.local.get(['tabs'], (data) => {
         let leaps = data.tabs ?? {};
         chrome.windows.getCurrent(window => {
           chrome.tabs.query({active: true, windowId: window.id}, tabs => {
@@ -128,14 +127,20 @@ chrome.runtime.onMessage.addListener(
                 });
               } else {
                 delete leaps[tabs[0].id];
-                chrome.storage.local.set({'tabs': leaps}, () => { return true; });
+                //chrome.storage.local.set({'tabs': leaps}, () => { return true; });
+                chrome.storage.local.set({'tabs': leaps});
               }
             }
-            else
-              return true;
+            else {
+              console.log('background.js / pursue-process / request', request);
+              console.log('background.js / pursue-process / sender', sender);
+              //return true;
+            }
           });
         })
       });
+      // console.log('background.js / pursue-process / true donecek');
+      // return true; // keep the messaging channel open to call sendResponse
     } else if (request.text === 'stop-process') {
       chrome.storage.local.get(['tabs'], (data) => {
         const leaps = data.tabs ?? {};
@@ -156,6 +161,8 @@ chrome.runtime.onMessage.addListener(
           });
         })
       });
+      // console.log('background.js / stop-process / true donecek');
+      // return true; // keep the messaging channel open to call sendResponse
     }
   }
 );
