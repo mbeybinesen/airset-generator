@@ -27,7 +27,16 @@ Kimola Airset Generator currently supports;
 - Instagram (Go to a post with comments - e.g., https://www.instagram.com/p/CgKiDqdlXba/)
 - Google Play (Go to a webpage of an app and select its reviews and wait until the modal which includes reviews open - e.g., https://play.google.com/store/apps/details?id=notion.id&hl=tr&gl=US)
 - Amazon.com (Go to a product with reviews, click on "all reviews" - e.g., https://www.amazon.com/Fiodio-Mechanical-Keyboards-Anti-Ghosting-Multi-Media/product-reviews/B09NNF3K2C/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews
-- Trustpilot (Go to the page of a business that has reviews - e.g., https://www.trustpilot.com/review/panaceafinancial.com
+- Trustpilot (Go to the page of a business that has reviews) - e.g., https://www.trustpilot.com/review/panaceafinancial.com
+- Booking (Go to the page of a hotel thas has reviews and click "Guest Reviews" on the right corner. A white screen on the right will come up, start Generating the Airset and stop when you grab enough reviews.) - e.g., https://www.booking.com/hotel/gb/thealan.en-gb.html?label=operasoft-sdO15-350386&sid=56b64e67c5af533a1009f4b40566b5d9&aid=350386&ucfs=1&arphpl=1&dest_id=-2602512&dest_type=city&group_adults=2&req_adults=2&no_rooms=1&group_children=0&req_children=0&hpos=1&hapos=1&sr_order=popularity&srpvid=16805e76ea170125&srepoch=1659360366&from_sustainable_property_sr=1&from=searchresults#tab-main
+- Yelp (Go to the page of a business that has reviews) - e.g. - https://www.yelp.com/biz/buck-wild-brewing-and-taproom-oakland and stop when you grab enough reviews.) - e.g., https://www.yelp.com/biz/buck-wild-brewing-and-taproom-oakland
+- G2 (Go to the page of a business that has reviews and click on "all reviews") - e.g.,https://www.g2.com/products/slack/reviews
+- Google Business Reviews ((Go to the page of a business that has reviews and click on "all reviews") - e.g.,[https://www.g2.com/products/slack/reviews](https://www.google.com/search?q=Statue+of+Liberty&client=opera&hs=d0Z&sxsrf=ALiCzsbLdKYfUW_64WV-Ftfi4ewxpNWPSw%3A1659362631743&ei=R93nYsL1LMiFxc8PlqKsuAw&ved=0ahUKEwiCtd_B56X5AhXIQvEDHRYRC8cQ4dUDCA0&uact=5&oq=Statue+of+Liberty&gs_lcp=Cgdnd3Mtd2l6EAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyDQguEMcBEK8BELADEEMyDQguEMcBEK8BELADEEMyDQguEMcBEK8BELADEEMyBwgAELADEEMyCggAEOQCELADGAEyCggAEOQCELADGAEyCggAEOQCELADGAEyDwguENQCEMgDELADEEMYAjIMCC4QyAMQsAMQQxgCMg8ILhDUAhDIAxCwAxBDGAJKBAhBGABKBAhGGAFQiwRYiwRggQZoA3ABeACAAQCIAQCSAQCYAQCgAQKgAQHIARLAAQHaAQYIARABGAnaAQYIAhABGAg&sclient=gws-wiz#lrd=0x89c25090129c363d:0x40c6a5770d25022b,1,,,))
+- Udemy (Go to the page of a course that has reviews and click on "see more reviews") - e.g.,[https://www.g2.com/products/slack/reviews](https://www.udemy.com/course/learning-python-for-data-analysis-and-visualization/#reviews)
+- Influenster (Go to the page of a product and click "Generate") - e.g., https://www.influenster.com/reviews/babyganics-mineral-based-baby-sunscreen-lotion-spf-50
+- Tripadvisor (Go to the page of a business and click on "Reviews" - e.g., https://www.tripadvisor.com.tr/Hotel_Review-g951444-d19275524-Reviews-Mare_Deluxe_Residence-Gundogan_Bodrum_District_Mugla_Province_Turkish_Aegean_Coast.html) 
+- Finances Online (Go to the page of a business and click on "Reviews") - e.g., https://reviews.financesonline.com/p/wrike/
+
 
 ## Generating Airset
 When on a web site supported by Kimola Airset Generator, you will see the badge on the icon. Badge displays the number of comments can be scraped.
